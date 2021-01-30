@@ -21,10 +21,10 @@
                         <div class="form-inline justify-content-end">
                             <div class="form-group">
                                 <div class="input-group">
-                                  <input v-model="filters.name" type="text" class="form-control" placeholder="Search...">
+                                  <input v-model="filters.keywords" v-on:keyup.enter="search" type="text" class="form-control" v-on:keyup.esc="clearText()" placeholder="Search...">
                                   <div class="input-group-append">
-                                    <button v-show="whenSearching" @click="clearText" class="btn btn-outline-secondary" type="button"><i class="fas fa-sync-alt"></i></button>
-                                    <button  class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
+                                    <button v-show="isSearching" @click="clearText" class="btn btn-outline-secondary" type="button"><i class="fas fa-sync-alt"></i></button>
+                                    <button  :disabled="keywordsIsInvalid" class="btn btn-outline-secondary" v-on:click="search"type="button"><i class="fas fa-search"></i></button>
                                   </div>
                                 </div>
                             </div>
