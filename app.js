@@ -192,9 +192,17 @@ new Vue({
           category:'',
           keywords:''
        },
-       isSearching:false
+       isSearching:false,
+       perPage:5,
+       currentPage:1
   },
   computed:{
+
+      productsPaginated(){
+         let start = (this.currentPage - 1) * this.perPage;
+         let end   = this.currentPage * this.perPage;
+         return this.productsSorted.slice(start,end)
+      },
      productsSorted(){
         return this.productsFiltered.sort((a,b) => {
            let left = a[this.order.coloumn], right = b[this.order.coloumn];
@@ -214,22 +222,57 @@ new Vue({
      whenSearching(){
         return this.filters.name.length > 0;
      },
+
+     // Returns that is sorted based on the query string given by the user
      productsFiltered(){
         let products = this.products;
-
         if(this.filters.name){
            let findName = new RegExp(this.filters.name,'i')
            products = products.filter(el => el.name.match(findName))
-           // console.log()
         }
-        console.log(products);
         return products;
      },
+
      keywordsIsInvalid(){
         return this.filters.keywords.length < 3;
+     },
+
+     //Returns True if the firstpage is = 1
+     // To check if the currentpage is the First and there is no more page for previous
+     isFirstPage(){
+        return this.currentPage === 1;
+     },
+
+     //Returns true if the currentpage is greaterthan or equal to the total or last of the page
+     //To check if the currentpage is the last and there is no more page for the next
+     isLastPage(){
+      return this.currentPage >= this.pages;
+     },
+
+     //Gets the total number of pages for the pagination depending on the how many records displayed perPage
+     pages(){
+        return Math.ceil(this.productsFiltered.length / this.perPage);
      }
+
   },
   methods:{
+     switchPage(page){
+      this.currentPage = page;
+      // this.currentPage = 4;
+     },
+
+     prev(){
+        if(!this.isFirstPage){
+         this.currentPage--;
+        }
+     },
+     next(){
+        if(!this.isLastPage){
+         this.currentPage++;
+        }
+     },
+     
+     //Method for the change/sort of products to ascending or descending
      toggle(coloumn){
         this.order.coloumn = coloumn;
         console.log(this.order.coloumn);
@@ -242,6 +285,8 @@ new Vue({
         this.order.coloumn === coloumn ? this.sortType : ''
         ]
      },
+
+     //Clears the input Button text
      clearText(){
       //   return this.filters.name = '';
          // return this.filters.name = this.filters.keywords = "";
@@ -253,7 +298,6 @@ new Vue({
         if(!this.keywordsIsInvalid){
          this.filters.name = this.filters.keywords;
          this.isSearching = true;
-         console.log(this.isSearching);
         }
 
      }
