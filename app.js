@@ -328,6 +328,13 @@ new Vue({
       }
      },
      
+     remove(product){
+        if(confirm("Are you sure??")){
+         let index = this.products.findIndex(item => item.id === product.id);
+         this.products.splice(index,1);
+        }
+     },
+     
      // Method to switch pages
      // switches the page depending on what page the user has clicked on the pagination
      switchPage(page){
