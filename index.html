@@ -47,6 +47,7 @@
                             <th @click="toggle('name')" :class="classes('name')">Product Name</th>
                             <th @click="toggle('category')" :class="classes('category')">Category</th>
                             <th @click="toggle('price')" :class="classes('price')">Price</th>
+                            <th width="100">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,6 +55,11 @@
                             <td>{{ product.name }}</td>
                             <td>{{ product.category }}</td>
                             <td>{{ product.price }}</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-outline-secondary" @click.prevent="edit(product)">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -76,7 +82,7 @@
             <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add New Product</h5>
+                <h5 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -90,7 +96,7 @@
                         <div class="form-group">
                             <label>Category</label>
                             <select class="form-control" v-model="product.category">
-                                <option v-for="category in categories" value="categories">{{category}}</option>
+                                <option v-for="category in categories" :value="category">{{category}}</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -101,7 +107,7 @@
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" @click.prevent="save">Save Changes</button>
+                <button type="button" class="btn btn-primary" @click.prevent="saveOrUpdate">Save Changes</button>
                 </div>
             </div>
             </div>
