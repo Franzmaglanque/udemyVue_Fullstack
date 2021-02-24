@@ -321,25 +321,26 @@ new Vue({
         }
      },
      update(){
-  
-      let index = this.products.findIndex(item => item.id === this.product.id);
-      this.products.splice(index,1,this.product);
-      this.isEdit = false;
-      $(this.$refs.vuemodal).modal('hide');
+      axios.put('http://127.0.0.1:8000/api/products/'+ this.product.id,this.product)
+           .then(({data}) =>{
+            let index = this.products.findIndex(item => item.id === this.product.id);
+            this.products.splice(index,1,this.data.data);
+            this.isEdit = false;
+            this.errors = {}
+            $(this.$refs.vuemodal).modal('hide');
+           })
+           .catch(({ response }) => {
+            this.errors = response.data.errors
+         })
      },
      testmethod(){
       console.log(this.product);
      },
      save(){
-      //   this.product.price = this.product.price * 100;
-      //   console.log(this.product);
-   
         axios.post('/products',this.product)
              .then(({data}) => {
-
                this.product.id = this.products.length + 1;
                this.productsPaginated.unshift(data.data);
-               // this.fetchProducts();
                this.product = {
                   id:null,
                   name: '',
@@ -351,18 +352,17 @@ new Vue({
 
              })
              .catch(({response}) =>{
-               //  console.log(err.response);
                this.errors = response.data.errors;
-               console.log(response.data.errors)
-               console.log(this.product)
              })
-            //  console.log(this.errors);
      },
      
      remove(product){
         if(confirm("Are you sure??")){
-         let index = this.products.findIndex(item => item.id === product.id);
-         this.products.splice(index,1);
+            axios.delete('http://127.0.0.1:8000/api/products/'+this.product,this.product)
+            .then(res =>{
+               let index = this.products.findIndex(item => item.id === product.id);
+               this.products.splice(index,1);
+            })
         }
      },
      
