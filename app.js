@@ -203,10 +203,11 @@ new Vue({
        product:{
           id:null,
           name:'',
-          category:'',
+          category_id:'',
           price:''
        },
-       isEdit: false 
+       isEdit: false,
+       errors:{}
   },
   mounted(){
    this.fetchProducts();
@@ -307,7 +308,7 @@ new Vue({
       this.product = {
          id:null,
          name: '',
-         category: '',
+         category_id: '',
          price: ''
       }
       $(this.$refs.vuemodal).modal('show');
@@ -320,25 +321,42 @@ new Vue({
         }
      },
      update(){
+  
       let index = this.products.findIndex(item => item.id === this.product.id);
       this.products.splice(index,1,this.product);
       this.isEdit = false;
       $(this.$refs.vuemodal).modal('hide');
      },
+     testmethod(){
+      console.log(this.product);
+     },
      save(){
-      if(this.product.name && this.product.category && this.product.price){
-         this.product.id = this.products.length + 1;
-         this.products.unshift(this.product);
-         this.product = {
-            id:null,
-            name: '',
-            category: '',
-            price: ''
-         }
-         $(this.$refs.vuemodal).modal('hide');
-      }else{
-         alert('Please fill in the form properly');
-      }
+      //   this.product.price = this.product.price * 100;
+      //   console.log(this.product);
+   
+        axios.post('/products',this.product)
+             .then(({data}) => {
+
+               this.product.id = this.products.length + 1;
+               this.productsPaginated.unshift(data.data);
+               // this.fetchProducts();
+               this.product = {
+                  id:null,
+                  name: '',
+                  category_id: '',
+                  price: ''
+               }
+               this.errors = {}
+               $(this.$refs.vuemodal).modal('hide');
+
+             })
+             .catch(({response}) =>{
+               //  console.log(err.response);
+               this.errors = response.data.errors;
+               console.log(response.data.errors)
+               console.log(this.product)
+             })
+            //  console.log(this.errors);
      },
      
      remove(product){
